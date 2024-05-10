@@ -1,15 +1,44 @@
 from tkinter import *
+from tkinter import filedialog
+from PIL import ImageTk, Image
+import os
+
+
+def set_screen_shape(root, width, height):
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    total_width = (screen_width // 2) - (width // 2)
+    total_height = (screen_height // 2) - (height // 2)
+    root.geometry(f'{width}x{height}+{total_width}+{total_height}')
+
+
+def image_upload():
+    home_dir = os.path.expanduser('~')
+    path = filedialog.askopenfilename(initialdir=os.path.join(home_dir, 'Pictures'),
+                                      filetypes=[('Image File','.jpg .png .jpeg')])
+    
+    if not len(path):
+        return
+
+    img = Image.open(path)
+    upload_bttn.destroy()
+
+    raw_img = ImageTk.PhotoImage(img)
+    img_show = Label(root, image=raw_img)
+    img_show.image = raw_img
+
+    set_screen_shape(root, img.width, img.height)
+
+    img_show.pack(side='bottom', fill='both', expand='yes')
 
 
 if __name__ == '__main__':
     root = Tk()
-
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    total_width = (screen_width // 2) - (500 // 2)
-    total_height = (screen_height // 2) - (300 // 2)
-
     root.title('Segmentation')
-    root.geometry(f'{500}x{300}+{total_width}+{total_height}')
+
+    set_screen_shape(root, 500, 300)
+
+    upload_bttn = Button(root, text='Choose image', command=image_upload)
+    upload_bttn.pack(side='bottom', pady=50)
 
     root.mainloop()
