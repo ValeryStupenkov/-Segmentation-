@@ -3,6 +3,14 @@ import torchvision
 import warnings
 import torch
 
+def categories_from_txt(path):
+    categories = []
+    with open(path, 'r') as file:
+        for line in file:
+            categories.append(line.strip())
+
+    return categories
+
 def filter(output):
     boxes = []
     labels = []
@@ -29,3 +37,5 @@ def segmentation(path):
     output = pretrained_model([img_tensor])[0]
 
     boxes, labels, scores = filter(output)
+
+    categories = categories_from_txt('../data/categories.txt')
