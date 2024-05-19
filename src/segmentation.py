@@ -54,8 +54,10 @@ def model_predictions(img: Image.Image) -> dict:
     return output
 
 def segmented_image(img, boxes, labels, scores):
-    categories = categories_from_txt('../data/categories.txt')
-
+    path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                        "data", "categories.txt")
+    categories = categories_from_txt(path)
+    
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in categories]
 
     result_image = np.array(img)
