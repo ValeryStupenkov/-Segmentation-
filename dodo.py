@@ -1,4 +1,4 @@
-"""Doit tasks."""
+"""Doit tasks for fast access."""
 
 
 def task_flake8():
@@ -8,14 +8,12 @@ def task_flake8():
         'verbosity': 2
     }
 
-
 def task_pydocstyle():
     """Run pydocstyle."""
     return {
         'actions': ['pydocstyle'],
         'verbosity': 2
     }
-
 
 def task_tests():
     """Run tests."""
@@ -24,9 +22,14 @@ def task_tests():
         'verbosity': 2
     }
 
-
 def task_html():
     """Build html."""
     return {
         'actions': ['make -C docs html']
+    }
+
+def task_wheel():
+    """Build wheel."""
+    return {
+        'actions': ['python3 -m build -w']
     }
