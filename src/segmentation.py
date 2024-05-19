@@ -1,4 +1,5 @@
 """Image segmentation."""
+
 from PIL import Image
 import torchvision
 import warnings
@@ -6,6 +7,7 @@ import torch
 import random
 import numpy as np
 import cv2
+import os
 
 def torch2numpy(torch_dict: dict) -> dict:
     """Return a numpy dict from a torch dict."""
@@ -15,6 +17,7 @@ def torch2numpy(torch_dict: dict) -> dict:
         np_dict[k] = torch_dict[k].cpu().numpy()
 
     return np_dict
+
 
 def categories_from_txt(path: str) -> list:
     """Read categories from a file and return array."""
@@ -40,6 +43,7 @@ def filter(output: dict) -> list | list | list:
 
     return boxes, labels, scores
 
+
 def model_predictions(img: Image.Image) -> dict:
     """Return pretrained model predictions."""
     torch.set_grad_enabled(False)
@@ -55,6 +59,7 @@ def model_predictions(img: Image.Image) -> dict:
     output = torch2numpy(output)
 
     return output
+
 
 def segmented_image(img: np.ndarray,
                     boxes: list,
@@ -89,14 +94,6 @@ def segmentation(path: str) -> Image.Image:
     img = Image.open(path)
 
     output = model_predictions(img)
-    #torch.set_grad_enabled(False)
-    #warnings.filterwarnings("ignore")
-    #pretrained_model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
-    #pretrained_model = pretrained_model.eval().cpu()
-
-    #img_tensor = torchvision.transforms.functional.to_tensor(img).cpu()
-    #output = pretrained_model([img_tensor])[0]
-
     boxes, labels, scores = filter(output)
 
     return segmented_image(np.array(img), boxes, labels, scores)
