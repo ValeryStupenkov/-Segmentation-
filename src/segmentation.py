@@ -1,3 +1,4 @@
+"""Image segmentation."""
 from PIL import Image
 import torchvision
 import warnings
@@ -16,6 +17,7 @@ def torch2numpy(torch_dict: dict) -> dict:
     return np_dict
 
 def categories_from_txt(path):
+    """Read categories from a file and return array."""
     categories = []
     with open(path, 'r') as file:
         for line in file:
@@ -25,6 +27,7 @@ def categories_from_txt(path):
 
 
 def filter(output):
+    """Return objects with a probability >= 0.5."""
     boxes = []
     labels = []
     scores = []
@@ -54,6 +57,7 @@ def model_predictions(img: Image.Image) -> dict:
     return output
 
 def segmented_image(img, boxes, labels, scores):
+    """Return a segmented image."""
     path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                         "data", "categories.txt")
     categories = categories_from_txt(path)
@@ -67,17 +71,20 @@ def segmented_image(img, boxes, labels, scores):
         tl = round(0.002 * max(result_image.shape[0:2])) + 1
         c1, c2 = (int(box[0]), int(box[1])), (int(box[2]), int(box[3]))
         cv2.rectangle(result_image, c1, c2, color, thickness=tl)
-        display_txt = "%s: %.1f%%" % (categories[label], 100*score)
+        text = "%s: %.1f%%" % (categories[label], 100*score)
         tf = max(tl - 1, 1)
-        t_size = cv2.getTextSize(display_txt, 0, fontScale=tl / 3, thickness=tf)[0]
+        t_size = cv2.getTextSize(text, 0, fontScale=tl / 3, thickness=tf)[0]
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(result_image, c1, c2, color, -1)
-        cv2.putText(result_image, display_txt, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+        cv2.putText(result_image, text, 
+                    (c1[0], c1[1] - 2), 0, tl / 3, 
+                    [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
 
     return Image.fromarray(result_image.astype(np.uint8))
 
 
 def segmentation(path):
+    """Segment an image."""
     img = Image.open(path)
 
     output = model_predictions(img)
