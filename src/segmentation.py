@@ -9,6 +9,7 @@ import numpy as np
 import cv2
 import os
 
+
 def torch2numpy(torch_dict: dict) -> dict:
     """Return a numpy dict from a torch dict."""
     np_dict = {}
@@ -69,7 +70,7 @@ def segmented_image(img: np.ndarray,
     path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                         "data", "categories.txt")
     categories = categories_from_txt(path)
-    
+
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in categories]
 
     for box, label, score, in zip(boxes, labels, scores):
@@ -82,8 +83,8 @@ def segmented_image(img: np.ndarray,
         t_size = cv2.getTextSize(text, 0, fontScale=tl / 3, thickness=tf)[0]
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(img, c1, c2, color, -1)
-        cv2.putText(img, text, 
-                    (c1[0], c1[1] - 2), 0, tl / 3, 
+        cv2.putText(img, text,
+                    (c1[0], c1[1] - 2), 0, tl / 3,
                     [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
 
     return Image.fromarray(img.astype(np.uint8))
