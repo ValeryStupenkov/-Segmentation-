@@ -39,6 +39,18 @@ doit html
 doit wheel
 ```
 
+#### Перевод
+``` bash
+doit pot
+doit po
+doit mo
+```
+
+#### Запуск русскоязычной версии
+``` bash
+LC_ALL=ru_RU.UTF-8 python3 src/main.py
+```
+
 -----
 
 ### Взаимодействие
